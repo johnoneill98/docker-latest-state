@@ -32,39 +32,19 @@ ImportError: No module named request
  ### Commands
  With `argument.py` the user have a variety of commands  to implement.
 
-####  The List Command
-```
-python3 argument.py -l
-```
-The list command calls the list function from `api.py` and returns a list of all of the image names from the API.
-
-#### The Sorted List Command
-```
-python3 argument.py -s
-```
-Similar to the list command, the sorted list command calls the sortedList function from `api.py` and returns a alphabetical list of all the image names from the API.
-
 #### The Search Command
 ```
 python3 argument.py -i <image-name>
 ```
 This commands lets the user to get the information specific information about the image they have entered.
 
-It will return the name of the image, the description of the image and the last time the image was updated.
+It will return the latest version of the image
 
-If the user does not enter a image from the API they will receive this prompt
-
-```
-python3 argument.py -i wrong
-Not found, try again
-```
 #### The help command
 If the user needs help with teh commands and doesn't want to return to this page, use this command
 ```
 python3 argument.py -h
 Correct formatting is 'python3 argument.py -i <imageName>' for looking up an image
-Correct formatting is 'python3 argument.py -l' for  a list of all known images
-Correct formatting is 'python3 argument.py -s' for  a sorted list of all known images
 ```
 #### Error Checking
  If a user puts an incorrect command teh will receive this message
