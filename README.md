@@ -32,7 +32,7 @@ ImportError: No module named request
  ### Commands
  With `argument.py` the user have a variety of commands  to implement.
 
-#### The Search Command
+#### The Search Image Command
 ```
 python3 argument.py -i <image-name>
 ```
@@ -40,6 +40,18 @@ This commands lets the user to get the information specific information about th
 
 It will return the latest version of the image
 
+### The Search Version Command
+```
+python3 argument.py -v <image-name> <version-number>
+```
+This commands allows the user to search to see if the version of an image exists with Docker Hub
+If teh Version doesn't exist, the latest version of the image will be the output
+Example:
+```
+python3 argument.py -v mongo 34
+Version: 34 is not a valid version of mongo
+Latest version of mongo is 4.2.7
+```
 #### The help command
 If the user needs help with teh commands and doesn't want to return to this page, use this command
 ```
