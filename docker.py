@@ -37,17 +37,20 @@ def main():
         except ValueError as err:
             print("Can not find the latest version of the image")
     if args.version:
-        number = args.version
-        number2 = '`'+ number + '`'
-        found = False
-        for l in image:
-            if number2 in l:
-                found = True
-                if 'latest' in l:
-                    print("Version: " + number +" is the latest version"+ args.image)
-                else:
-                    print("Version: " + number + " is a valid version of "+ args.image)
-                break
-        if not found:
-            print("Version: " + number + " is not a valid version of" +args.image)
+        try:
+            number = args.version
+            number2 = '`'+ number + '`'
+            found = False
+            for l in image:
+                if number2 in l:
+                    found = True
+                    if 'latest' in l:
+                        print("Version: " + number +" is the latest version"+ args.image)
+                    else:
+                        print("Version: " + number + " is a valid version of "+ args.image)
+                    break
+            if not found:
+                print("Version: " + number + " is not a valid version of" +args.image)
+        except UnboundLocalError as err:
+            print("You must put an image name first then the version number")
 main()
