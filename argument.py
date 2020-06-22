@@ -9,7 +9,8 @@ def main(argv):
     inputfile = ''
     number = ''
     try:
-        opt, args = getopt.getopt(argv, "hi:v:", ["ifile=","lfile=","number="])
+        opt, args = getopt.getopt(
+            argv, "hi:v:", ["ifile=", "lfile=", "number="])
     except getopt.GetoptError:
         print("If you need help, type 'python3 argument.py -h'")
         sys.exit(2)
@@ -21,9 +22,11 @@ def main(argv):
         elif opt in ("-i", "--ifile"):
             inputfile = arg
             api.search(inputfile)
-        elif opt in ("-v", "--lfile","--number"):
+        elif opt in ("-v", "--lfile", "--number"):
             name = arg
-            number =args[0]
+            number = args[0]
             api.printNumber(name, number)
+
+
 if __name__ == "__main__":
     main(sys.argv[1:])
