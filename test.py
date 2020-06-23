@@ -1,6 +1,17 @@
 import argparse
 import requests
 def validVersion(vname):
+    """[summary]
+    This function takes the version number of an images and tells if its a valid version or not.
+    If the version has words in ti then it is is valid
+
+    Args:
+        vname: the name of teh version
+
+    Returns:
+        A boolean value that tells if teh version number is valid or not based on 
+        if the version numbers has only numbers and decimals or not
+    """
     isValid= True
     for s in vname:
         if not (s.isnumeric() or s == '.'):
@@ -32,20 +43,18 @@ def api(image):
         if validVersion(vname):
             values={last_updated:vname}
             names.update(values)
-    # list of tuples
+    # list of tuples from earliest and latest
     new_list=(sorted(names.items(), key = lambda kv: (kv[0], kv[1])))
     return new_list
 def latest(image):
+    # finds out what is the latest version
     versions = api(image)
-    print(type(versions))
-    print(versions[-1])
+    print("Latest version of " + image + " is " + versions[-1][-1])
 def version(image, number):
+    # see if a version is valid or not, if it isn't it wil give a lists of valid versions
     versions = api(image)
-    if number not in versions:
-        print( "Version " + number + " is not accepted .Accepted versions are ")
-        for item in versions:
-            print (item ,"\n")
-
+    if number  in versions:
+        print( "Version " + number + " is an accepted version")
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='This script takes a image and either shows the latest version of the image or if the version is a valid version'
