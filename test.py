@@ -1,10 +1,10 @@
 """
 ASSUMPTIONS: The latest version is the last updated
-             The version only contiains integers and decimals
 """
 import argparse
 import requests
 from operator import itemgetter
+import sys
 def validVersion(vname):
     """[summary]
     This function takes the version number of an images and tells if its a valid version or not.
@@ -33,51 +33,93 @@ def api(image):
     Returns:
         a list of all version of the supported  images from dockerHub
     """
-    # intital api call
-    url = 'https://registry.hub.docker.com/v2/repositories/library/'
     #replaces all spaces with dashes to satisfy teh api call
     ui = image.replace(" ", "-")
     # complete api call
-    response = requests.get(f"{url}/{ui}/tags?page=1&page_size=25")
+    if ui.find("/") != -1:
+        url = "https://registry.hub.docker.com/v2/repositories/"
+    else:
+        url = "https://registry.hub.docker.com/v2/repositories/library/"
+    response = requests.get(f"{url}/{ui}/tags?page=1&page_size=100")
+    # Error checking
+    if response.status_code != 200:
+        print(f"Error {image} does not have any infomarion about version numbers")
+        quit()
     response = response.json()
+
+    if response['results'] == []:
+        print(f"Error{ui}does not hae any information about version numbers=")
     response = response['results']
     names ={ }
+    test =[]
     for l in response:
         vname =l['name']
+        last_updated=l['last_updated']
+        test.append(last_updated)
+        if last_updated == None:
+            test.remove(last_updated)
         # formating the date for it to be easier to read
-        last_updated = l['last_updated'].replace('T', ' ')
+        last_updated = str(test).replace('T', ' ')
         if validVersion(vname):
             values={last_updated:vname}
             names.update(values)
     # list of tuples from earliest and latest
     new_list=(sorted(names.items(), key = lambda kv: (kv[0], kv[1])))
-    print(new_list)
+    #itemgetter takes the list of tuples  and returns every value at index 1 for each tuple
+    new_list = list(map(itemgetter(1), new_list))
     return new_list
-def latest(image):
+def last_updated(image):
     # finds out what is the latest version of an image
     versions = api(image)
-    print("Latest version of " + image + " is " + versions[-1][-1])
-def version(image, number):
+    print(f"Last updated version of {image} is {versions[-1]}")
+
+def version_list(image, number):
     # see if a version is valid or not, if it isn't it wil give a lists of valid versions
     versions = api(image)
-    #itemgetter takes the list of tuples  and returns every value at index 1 for each tuple
-    result = list(map(itemgetter(1), versions))
-    if number not in result:
-         print('Version: '+ number + ' is not a valid version of ' +image)
-         print('Valid versions of ' +image + ' are')
-         print(result)
+    if number not in versions:
+         print(f"Version: {number} is not a valid version of  +{image}")
+         print(f"Valid versions of  {image}  are")
+         print(f"{versions}")
     else:
-        print('Version ' + 'number is a valid version of '  + image )
-if __name__ == "__main__":
+        print(f"Version {number} is a valid version of {image} \n")
+def last_version(image):
+    """[summary]
+    Takes the list of valid version numbers and conversts it to a number in order to sort for lowest to highest
+    Args:
+        image ([type]): [a valid version name]
+    """
+    finallist =[]
+    versions =api(image)
+    for v in versions:
+        versionNumberList = v.split(".")
+        y = 0.0
+        for i,n in enumerate(versionNumberList):
+            y = y+(int(n)/(10**i))
+        finallist.append((y,v))
+    finallist.sort( reverse = True)
+    print(f"The latest version of {image} is {finallist[0][1]}")
+
+def main():
     parser = argparse.ArgumentParser(
         description='This script takes a image and either shows the latest version of the image or if the version is a valid version'
     )
-    parser.add_argument('-i', dest='image', type=str, required=True,
-                        help= "Please enter a image")
-    parser.add_argument('-v', dest='version', type=str,
+    parser.add_argument('--lastupdaded,','-i', dest='image', type=str,
+                        help= "Please enter an image")
+    parser.add_argument('--version','-v', dest='version', type=str,
                         help= "Please enter a image then its version number ")
+    parser.add_argument('--latestversion','-l', dest='latest', type=str,
+                        help= "Please enter an image ")
+
     args = parser.parse_args()
+    if len(sys.argv) < 2:
+        parser.print_help()
+        sys.exit(1)
     if args.image:
-        latest(args.image)
+        last_updated(args.image)
     if args.version:
-        version(args.image, args.version)
+        version_list(args.latest, args.version)
+    if args.latest:
+        last_version(args.latest)
+if __name__ == '__main__':
+    main()
+
