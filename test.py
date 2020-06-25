@@ -1,6 +1,4 @@
-"""
-ASSUMPTIONS: The latest version is the last updated
-"""
+
 import argparse
 import requests
 from operator import itemgetter
@@ -17,12 +15,12 @@ def validVersion(vname):
         A boolean value that tells if teh version number is valid or not based on
         if the version numbers has only numbers and decimals or not
     """
-    isValid= True
+    isvalid= True
     for s in vname:
         if not (s.isnumeric() or s == '.'):
-            isValid = False
+            isvalid = False
             break
-    return isValid
+    return isvalid
 
 def api(image):
     """[summary]
@@ -46,20 +44,19 @@ def api(image):
         print(f"Error {image} does not have any infomarion about version numbers")
         quit()
     response = response.json()
-
-    if response['results'] == []:
-        print(f"Error{ui}does not hae any information about version numbers=")
-    response = response['results']
+    if response["results"] == []:
+        print(f"Error{ui}does not hae any information about version numbers")
+    response = response["results"]
     names ={ }
     test =[]
     for l in response:
-        vname =l['name']
-        last_updated=l['last_updated']
+        vname =l["name"]
+        last_updated=l["last_updated"]
         test.append(last_updated)
         if last_updated == None:
             test.remove(last_updated)
         # formating the date for it to be easier to read
-        last_updated = str(test).replace('T', ' ')
+        last_updated = str(test).replace("T", " ")
         if validVersion(vname):
             values={last_updated:vname}
             names.update(values)
@@ -67,6 +64,8 @@ def api(image):
     new_list=(sorted(names.items(), key = lambda kv: (kv[0], kv[1])))
     #itemgetter takes the list of tuples  and returns every value at index 1 for each tuple
     new_list = list(map(itemgetter(1), new_list))
+    if new_list == []:
+        raise IndexError(f"{image} does not exist")
     return new_list
 def last_updated(image):
     # finds out what is the latest version of an image
