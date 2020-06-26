@@ -31,7 +31,7 @@ def api(image):
     Returns:
         a list of all version of the supported  images from dockerHub
     """
-    #replaces all spaces with dashes to satisfy teh api call
+    #replaces all spaces with dashes to satisfy the api call
     ui = image.replace(" ", "-")
     # complete api call
     if ui.find("/") != -1:
@@ -47,6 +47,8 @@ def api(image):
     if response["results"] == []:
         print(f"Error{ui}does not hae any information about version numbers")
     response = response["results"]
+    return response
+def manipulate(response) :
     names ={ }
     test =[]
     for l in response:
@@ -65,30 +67,27 @@ def api(image):
     #itemgetter takes the list of tuples  and returns every value at index 1 for each tuple
     new_list = list(map(itemgetter(1), new_list))
     if new_list == []:
-        raise IndexError(f"{image} does not exist")
+        raise IndexError(f" image does not exist")
     return new_list
-def last_updated(image):
+def last_updated(image, update):
     # finds out what is the latest version of an image
-    versions = api(image)
-    print(f"Last updated version of {image} is {versions[-1]}")
+    print(f"Last updated version of {image} is {update[-1]}")
 
-def version_list(image, number):
+def version_list(name, image, number):
     # see if a version is valid or not, if it isn't it wil give a lists of valid versions
-    versions = api(image)
-    if number not in versions:
-         print(f"Version: {number} is not a valid version of  +{image}")
-         print(f"Valid versions of  {image}  are")
-         print(f"{versions}")
+    if number not in image:
+         print(f"Version: {number} is not a valid version of  {name}")
+         print(f"Valid versions of {name} are")
+         print(f"{image}")
     else:
-        print(f"Version {number} is a valid version of {image} \n")
-def last_version(image):
+        print(f"Version {number} is a valid version of {name}")
+def last_version(image,versions):
     """[summary]
     Takes the list of valid version numbers and conversts it to a number in order to sort for lowest to highest
     Args:
         image ([type]): [a valid version name]
     """
     finallist =[]
-    versions =api(image)
     for v in versions:
         versionNumberList = v.split(".")
         y = 0.0
@@ -96,29 +95,41 @@ def last_version(image):
             y = y+(int(n)/(10**i))
         finallist.append((y,v))
     finallist.sort( reverse = True)
+
+   # printing(image,finallist[0][1])
     print(f"The latest version of {image} is {finallist[0][1]}")
+
+def printing(a,b):
+    if last_version:
+        print(f"The latest version of {a} is {b}")
 
 def main():
     parser = argparse.ArgumentParser(
         description='This script takes a image and either shows the latest version of the image or if the version is a valid version'
     )
-    parser.add_argument('--lastupdaded,','-i', dest='image', type=str,
-                        help= "Please enter an image")
-    parser.add_argument('--version','-v', dest='version', type=str,
+    parser.add_argument('--lastupdated,','-i', dest='image', type=str,
+                        help= "Please enter an image to get the last updated version")
+    parser.add_argument('--version','-v', action='append', dest='version', type=str,
                         help= "Please enter a image then its version number ")
     parser.add_argument('--latestversion','-l', dest='latest', type=str,
-                        help= "Please enter an image ")
+                        help= "Please enter an image to get the lastest version ")
 
     args = parser.parse_args()
     if len(sys.argv) < 2:
         parser.print_help()
         sys.exit(1)
     if args.image:
-        last_updated(args.image)
+        versions = api(args.image)
+        number = manipulate(versions)
+        last_updated(args.image, number)
     if args.version:
-        version_list(args.latest, args.version)
+        versions = api(args.latest)
+        info = manipulate(versions)
+        version_list(args.latest, info, args.version)
     if args.latest:
-        last_version(args.latest)
+        versions = api(args.latest)
+        number = manipulate (versions)
+        last_version(args.latest,number)
 if __name__ == '__main__':
     main()
 

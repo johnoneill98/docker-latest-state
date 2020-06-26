@@ -6,63 +6,77 @@ This is some python scripts to show some basic information about Docker images
 The website that used in the `api.py` is the following
 https://hub.docker.com/v2/repositories/library/?page=1&page_size=100
 
-## `Argument.py`
+## `Docker.py`
 
-`Argument.py` is a python script that lets a user to call a command line argument that calls a function from `api.py`
+`docker.py` is a python script that lets a user to call a command line argument that calls a function from `api.py`
 
 ### Formatting
 
-To use the `argument.py` the user has to format the command line arguments as such
+To use the `docker.py` the user has to format the command line arguments as such
 
 ```
-python3 argument.py <command>
+python3 docker.py <command>
 ```
-The reason why it is python3 instead of python is because `api.py` uses the urllib.request module that is not supported by python.
-So, if a user tries to that they will get this error message
+The reason why it is python3 instead of python is because `docker.py` uses the urllib.request module that is not supported by python.
 
-```
-python argument.py -h
-Traceback (most recent call last):
-  File "argument.py", line 5, in <module>
-    import api
-  File "/home/john/docker-latest/docker-latest-state/api.py", line 3, in <module>
-    import urllib.request
-ImportError: No module named request
-```
  ### Commands
- With `argument.py` the user have a variety of commands  to implement.
+ With `docker.py` the user have a variety of commands to implement.
 
-#### The Search Image Command
+#### The Latest Version Command
 ```
-python3 argument.py -i <image-name>
+$python3 docker.py -l <image-name>
 ```
-This commands lets the user to get the information specific information about the image they have entered.
+This commands lets the user to get the information specific to the image they have entered.
 
-It will return the latest version of the image
+It will return the whatever version was latest for that image
+### The Last Updated  command
+~~~
+python3 docker.py -i <image-name>
+~~~
+This commands allows the user top see what eas the last updated version. Most people would think that the latest version is the last updated but that is not the case for some images in DockerHub's registry:
 
+Example
+```
+$python3 docker.py -l postgres
+The latest version of postgres is 13
+$python3 docker.py -i postgres
+Last updated version of postgres is 9.6.18
+```
 ### The Search Version Command
 ```
-python3 argument.py -v <image-name> <version-number>
+python3 docker.py -l <image-name> -v <version-number>
 ```
-This commands allows the user to search to see if the version of an image exists with Docker Hub
-If teh Version doesn't exist, the latest version of the image will be the output
+This command allows the user to search to see if the version of an image exists with Docker Hub
+If the Version doesn't exist, the user will be prompted with all the current versions of the image and after that the latest version of the image
 Example:
 ```
-python3 argument.py -v mongo 34
-Version: 34 is not a valid version of mongo
-Latest version of mongo is 4.2.7
+$ python3 docker.py -l mongo -v 24
+Version: ['24'] is not a valid version of  mongo
+Valid versions of mongo are
+['4.0.17', '4.2.5', '3.6.17', '4.2.6', '4.0.18', '4.2.7', '3', '3.6', '3.6.18', '4', '4.0', '4.0.19', '4.2', '4.2.8']
+The latest version of mongo is 4.2.8
 ```
+In order to find the versions the user must put `-l <image-name>` before teh version number
+
 #### The help command
 If the user needs help with teh commands and doesn't want to return to this page, use this command
 ```
-python3 argument.py -h
-Correct formatting is 'python3 argument.py -i <imageName>' for looking up an image
-```
-#### Error Checking
- If a user puts an incorrect command teh will receive this message
-```
-python3 argument.py -help
-If you need help, type 'python3 argument.py -h'
+$ python3 docker.py -h
+usage: docker.py [-h] [--lastupdated, IMAGE] [--version VERSION]
+                 [--latestversion LATEST]
+
+This script takes a image and either shows the latest version of the image or
+if the version is a valid version
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --lastupdated, IMAGE, -i IMAGE
+                        Please enter an image to get the last updated version
+  --version VERSION, -v VERSION
+                        Please enter a image then its version number
+  --latestversion LATEST, -l LATEST
+                        Please enter an image to get the lastest version`
+
 ```
 
 
