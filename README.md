@@ -3,14 +3,14 @@ This is some python scripts to show some basic information about Docker images
 
 ## Website
 
-The website that used in the `api.py` is the following
+The website that used in the `docker.py` is the following
 https://hub.docker.com/v2/repositories/library/?page=1&page_size=100
 
 ## `Docker.py`
 
 `docker.py` is a python script that lets a user to call a command line argument that calls a function from `api.py`
 
-### Formatting
+## Formatting
 
 To use the `docker.py` the user has to format the command line arguments as such
 
@@ -19,10 +19,10 @@ python3 docker.py <command>
 ```
 The reason why it is python3 instead of python is because `docker.py` uses the urllib.request module that is not supported by python.
 
- ### Commands
+ ## Commands
  With `docker.py` the user have a variety of commands to implement.
 
-#### The Latest Version Command
+### The Latest Version Command
 ```
 $python3 docker.py -l <image-name>
 ```
